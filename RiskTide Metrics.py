@@ -4,6 +4,8 @@ from scipy.stats import kurtosis, skew
 from sklearn.linear_model import LinearRegression
 import os
 import time
+from datetime import datetime, timedelta
+
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 def silent_excepthook(exc_type, exc_value, traceback):
@@ -27,6 +29,36 @@ portfolio_data = portfolio_data.dropna(subset=['Date Purchased'])
 # Summary metrics list
 summary_metrics = []
 
+
+
+def clean_all_temp_files(temp_file_pattern="*_data_*.csv"):
+    """
+    Removes all files matching the specified pattern.
+
+    :param temp_file_pattern: The pattern used to identify files for deletion.
+    """
+    temp_files_removed = 0
+
+    for file_name in os.listdir('.'):
+        # Check if the file matches the pattern
+        if "_data_" in file_name and file_name.endswith('.csv'):
+            try:
+                # Delete the file
+                os.remove(file_name)
+                temp_files_removed += 1
+                print(f"Deleted temporary file: {file_name}")
+            except Exception as e:
+                print(f"Error deleting file {file_name}: {e}")
+
+    if temp_files_removed == 0:
+        print("No temporary files found.")
+    else:
+        print(f"Total temporary files removed: {temp_files_removed}")
+
+# Call the function before starting the main workflow
+clean_all_temp_files()
+
+        
 # Function to process each stock independently
 def process_stock(stock):
     stock_metrics = {}
