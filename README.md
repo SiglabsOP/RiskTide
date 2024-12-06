@@ -8,7 +8,7 @@ RiskTide is a comprehensive portfolio risk management software designed to help 
 ## Features
 
 ### Portfolio Management
-- Add stocks to your portfolio with details like ticker, purchase date, units, and price.
+- Add stocks to your portfolio with details like ticker, purchase date, units, and price. (MassImport stocks to your portfolio is possible.use Jstock and export Buy Portfolio Management.csv in the same dir as RiskTide and press import)
 - View your portfolio in a sortable, customizable treeview.
 - Delete entries from your portfolio.
 - Automatically save and load portfolio data.
@@ -107,7 +107,7 @@ The program processes and stores stock data as follows:
 From the RiskTide documentation:
 
 This is your portfolio risk management software. You can:
-        1. Add stocks to your portfolio
+        1. Add or Import stocks to your portfolio. (use Jstock and export Buy Portfolio Management.csv in the same dir as RiskTide and press import)
         2. Calculate your portfolio's risk metrics
         3. Delete entries from your portfolio
         4. View risk metrics in a detailed modal

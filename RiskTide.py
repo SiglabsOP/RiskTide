@@ -168,6 +168,11 @@ class RiskTideGUI:
         self.delete_button = tk.Button(self.portfolio_frame, text="Delete Entry", font=("Arial", 12, "bold"), fg="white", bg="#E94E77", command=self.delete_entry)
         self.delete_button.pack(side=tk.LEFT, padx=10)
         
+    # Add Import button to the GUI
+        self.import_button = tk.Button(self.root, text="Jstock Import", font=("Arial", 12, "bold"), fg="white", bg="#4A90E2", command=self.import_csv)
+
+        self.import_button.pack(side=tk.BOTTOM, pady=10)  # Place it at the bottom of the screen        
+        
         # Create a frame for the About and Help buttons
         self.button_frame = tk.Frame(self.root, bg="#2D3E50")
         self.button_frame.pack(fill="x", pady=10)
@@ -185,6 +190,51 @@ class RiskTideGUI:
 
         # Load portfolio from file
         self.load_portfolio()
+
+
+
+    def import_csv(self):
+        """Import stock data from the JStock CSV file and populate the portfolio."""
+        import_file = "Buy Portfolio Management.csv"  # File name to import
+        try:
+            # Read the CSV file
+            df = pd.read_csv(import_file)
+    
+            # Ensure required columns are present
+            required_columns = ["Code", "Date", "Units", "Purchase Price"]
+            if not all(col in df.columns for col in required_columns):
+                messagebox.showerror("Error", "Missing required columns in CSV.")
+                return
+    
+            # Extract and transform relevant data
+            imported_data = []
+            for _, row in df.iterrows():
+                try:
+                    stock_ticker = row["Code"]
+                    date_purchased = pd.to_datetime(row["Date"]).strftime("%d-%m-%Y")  # Convert to DD-MM-YYYY
+                    units_purchased = float(row["Units"])
+                    purchase_price = float(row["Purchase Price"])
+                    total_purchase_price = units_purchased * purchase_price
+    
+                    imported_data.append((stock_ticker, date_purchased, units_purchased, purchase_price, total_purchase_price))
+                except Exception as e:
+                    print(f"Error processing row: {row} -> {e}")
+                    continue
+    
+            # Populate the Treeview
+            for stock_data in imported_data:
+                self.tree.insert("", "end", values=stock_data)
+    
+            # Save to portfolio file
+            self.save_portfolio()
+            messagebox.showinfo("Success", f"Imported {len(imported_data)} stocks successfully!")
+        except FileNotFoundError:
+            messagebox.showerror("INFO", f"File '{import_file}' not found.use Jstock first to export the data into a Buy Portfolio Management.csv file and place it in the same dir as RiskTide, after this you can press import")
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to import CSV: {e}")
+    
+ 
+
 
     def delete_entry(self):
         """Delete the selected entry from the portfolio."""
@@ -407,7 +457,7 @@ class RiskTideGUI:
             canvas.create_window((0, 0), window=help_content_frame, anchor="nw")
 
             help_text = """This is your portfolio risk management software. You can:
-        1. Add stocks to your portfolio
+        1. Add or Import stocks to your portfolio. (use Jstock and export Buy Portfolio Management.csv in the same dir as RiskTide and press import)
         2. Calculate your portfolio's risk metrics
         3. Delete entries from your portfolio
         4. View risk metrics in a detailed modal
