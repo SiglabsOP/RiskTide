@@ -265,7 +265,7 @@ From the RiskTide documentation:
 
 ![Screenshot 2024-12-06 201436](https://github.com/user-attachments/assets/54adb1f4-83e5-4e12-b630-eeb954156833)
 
-Please note each position will show up only once in the metrics summary, but we used random generated data to populate the screenshots
+ 
 
 If you enjoy this program, buy me a coffee https://buymeacoffee.com/siglabo
 You can use it free of charge or build upon my code. 
