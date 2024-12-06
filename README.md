@@ -12,6 +12,8 @@ RiskTide is a comprehensive portfolio risk management software designed to help 
 - View your portfolio in a sortable, customizable treeview.
 - Delete entries from your portfolio.
 - Automatically save and load portfolio data.
+- Visualize metrics through graphs    (bar chart ,pie chart, scatter plot, box plot, line chart, heatmap and histogram)
+- Export metrics and graphs datas. 
 
 ### Risk Metrics Calculation
 - Calculate and display a wide range of risk metrics for your portfolio.
@@ -106,11 +108,12 @@ The program processes and stores stock data as follows:
 
 From the RiskTide documentation:
 
-This is your portfolio risk management software. You can:
+        This is your portfolio risk management software. You can:
         1. Add or Import stocks to your portfolio. (use Jstock and export Buy Portfolio Management.csv in the same dir as RiskTide and press import)
         2. Calculate your portfolio's risk metrics
         3. Delete entries from your portfolio
         4. View risk metrics in a detailed modal
+        You may restart after adding entries for the graphs and metrics to load properly.
         
         Risk Metrics:
         The SPY is fetched from kaggle, so you need your kaggle APIkey (a json file) placed inside of 
@@ -211,7 +214,52 @@ This is your portfolio risk management software. You can:
         Performance Evaluation: Alpha, Beta, and R² help to assess if your portfolio is performing better than the market or in line with it, and how volatile it is.
         Investment Strategy: Depending on your risk tolerance, choose metrics that align with your strategy. For example, conservative investors may focus on low Beta, low Max Drawdown, and high Sharpe Ratio, while aggressive investors may prioritize high Alpha and potential returns.
         
-        By using these metrics effectively, you can better understand the performance and risks of your portfolio, and make more informed investment decisions.""" 
+        The charts might help you analyze your investments. You may export both metrics and graph datas.
+        
+        The graphs generated for your portfolio metrics provide valuable insights into the risk and performance of your investments. Below is a guide to understanding each graph:
+        
+        1. Bar Chart: Sharpe Ratio by Stock
+        What it shows: The Sharpe Ratio measures the risk-adjusted return of each stock in your portfolio.
+        How to interpret:
+        Higher Sharpe Ratios (> 2) indicate better risk-adjusted performance.
+        Ratios between 1 and 2 suggest acceptable returns for the risk taken.
+        Ratios below 1 are generally undesirable and may indicate poor risk-return balance.
+        2. Pie Chart: Proportion of Max Drawdown
+        What it shows: The contribution of each stock to the portfolio's overall risk, represented by its maximum drawdown (largest loss from peak to trough).
+        How to interpret:
+        Larger slices indicate stocks that have significantly contributed to portfolio risk.
+        Consider reducing exposure to stocks with a disproportionately large share if you're risk-averse.
+        3. Scatter Plot: Alpha vs. Beta
+        What it shows: The relationship between Alpha (excess return over a benchmark) and Beta (volatility compared to the market) for each stock.
+        How to interpret:
+        Stocks with high Alpha and low Beta are ideal, as they offer high returns with lower risk.
+        High Alpha, high Beta suggests high returns but increased risk.
+        Low Alpha, low Beta indicates safer investments with modest or poor returns.
+        4. Box Plot: Distribution of Sharpe Ratios                                                        
+        What it shows: The range and distribution of Sharpe Ratios across all stocks in your portfolio.
+        How to interpret:
+        Narrow box: Consistent risk-adjusted performance among stocks.
+        Wide box or outliers: Indicates variability in risk-return profiles. Outliers may warrant a deeper look to understand their impact on the portfolio.
+        5. Line Chart: Cumulative Returns (Simulated using Alpha)
+        What it shows: A simulated trend of cumulative returns based on Alpha values for each stock.
+        How to interpret:
+        An upward trend indicates growing returns.
+        A flat or declining trend suggests underperformance or stagnation.
+        6. Heatmap: Correlation Matrix of Metrics
+        What it shows: The correlation between key metrics (e.g., Alpha, Beta, Sharpe Ratio, Sortino Ratio, Omega Ratio) across your portfolio.
+        How to interpret:
+        Strong positive correlations (near +1) suggest metrics that move together.
+        Strong negative correlations (near -1) highlight metrics with opposite trends.
+        Weak correlations (near 0) indicate independent relationships, which can be useful for diversification.
+        7. Histogram: Frequency of Skewness
+        What it shows: The distribution of skewness (asymmetry in returns) across your portfolio.
+        How to interpret:
+        Positive skewness suggests the potential for large gains.
+        Negative skewness implies a higher probability of large losses.
+        A centered distribution (close to 0 skewness) indicates balanced risk and reward.
+        By analyzing these graphs, you can make more informed decisions about which stocks to hold, sell, or monitor closely based on their performance and risk characteristics.        
+        
+        By using these metrics effectively, you can better understand the performance and risks of your portfolio, and make more informed investment decisions.
 ![Screenshot 2024-12-06 093114](https://github.com/user-attachments/assets/2ec48992-ca53-4368-82b3-82af91865745)
 ![Screenshot 2024-12-06 093129](https://github.com/user-attachments/assets/f7eb5909-97bd-41dc-9059-24e34cec4d50)
 ![Screenshot 2024-12-06 093136](https://github.com/user-attachments/assets/b48ee6a3-8249-4410-9fd5-188240aa82d3)

@@ -4,6 +4,14 @@ import pandas as pd
 import pickle  # For saving the portfolio data
 import webbrowser  # For clickable links
 import subprocess
+import matplotlib.pyplot as plt
+import seaborn as sns
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import sys
+import os
+from matplotlib.backends.backend_pdf import PdfPages
+from tkinter import filedialog
+
 
 def run_external_scripts():
     # Run RiskTide Horizon.py and wait for it to finish
@@ -78,6 +86,10 @@ class RiskTideGUI:
         # Buttons for Calculations and Display
         self.calculate_button = tk.Button(self.root, text="Calculate Risk Metrics", font=("Arial", 12, "bold"), fg="white", bg="#4A90E2", command=self.calculate_risk_metrics)
         self.calculate_button.pack(pady=10)
+        
+        self.graph_button = tk.Button(self.root, text="Generate Graphs", font=("Arial", 12, "bold"), fg="white", bg="#4A90E2", command=self.generate_graphs)
+        self.graph_button.pack(pady=10)
+
 
         style = ttk.Style()
         
@@ -151,10 +163,7 @@ class RiskTideGUI:
         self.scrollbar_y.config(command=self.tree.yview)
         self.scrollbar_x.config(command=self.tree.xview)
         self.tree.config(yscrollcommand=self.scrollbar_y.set, xscrollcommand=self.scrollbar_x.set)
-
-        # Add Stock Button
-        # Buttons with Gradient
-        # Add Stock Button
+        
         # Portfolio Management Section
         # Create a frame for the Add Stock and Delete Entry buttons
         self.portfolio_frame = tk.Frame(self.root, bg="#2D3E50")
@@ -168,14 +177,9 @@ class RiskTideGUI:
         self.delete_button = tk.Button(self.portfolio_frame, text="Delete Entry", font=("Arial", 12, "bold"), fg="white", bg="#E94E77", command=self.delete_entry)
         self.delete_button.pack(side=tk.LEFT, padx=10)
         
-    # Add Import button to the GUI
-        self.import_button = tk.Button(self.root, text="Jstock Import", font=("Arial", 12, "bold"), fg="white", bg="#4A90E2", command=self.import_csv)
-
-        self.import_button.pack(side=tk.BOTTOM, pady=10)  # Place it at the bottom of the screen        
-        
-        # Create a frame for the About and Help buttons
+        # Create a frame for the About, Help, and Import buttons
         self.button_frame = tk.Frame(self.root, bg="#2D3E50")
-        self.button_frame.pack(fill="x", pady=10)
+        self.button_frame.pack(fill="x", pady=10, padx=10)
         
         # About and Help Buttons
         self.about_button = tk.Button(self.button_frame, text="About", font=("Arial", 12, "bold"), fg="white", bg="#4A90E2", command=self.show_about_modal)
@@ -184,15 +188,18 @@ class RiskTideGUI:
         self.help_button = tk.Button(self.button_frame, text="Help", font=("Arial", 12, "bold"), fg="white", bg="#4A90E2", command=self.show_help_modal)
         self.help_button.pack(side=tk.LEFT, padx=10)
         
+        # Import Button
+        self.import_button = tk.Button(self.button_frame, text="Jstock Import", font=("Arial", 12, "bold"), fg="white", bg="#4A90E2", command=self.import_csv)
+        self.import_button.pack(side=tk.RIGHT, padx=10)  # Aligned to the right
+        
         # Result Label (Positioned at the bottom of the window)
         self.result_label = tk.Label(self.root, text="(c) 2024 SIG Labs", font=("Arial", 14), fg="white", bg="#2D3E50", justify="left")
-        self.result_label.pack(side=tk.TOP, pady=10)
-
-        # Load portfolio from file
+        self.result_label.pack(side=tk.BOTTOM, pady=5)
+        
+        # Load portfolio
         self.load_portfolio()
 
-
-
+ 
     def import_csv(self):
         """Import stock data from the JStock CSV file and populate the portfolio."""
         import_file = "Buy Portfolio Management.csv"  # File name to import
@@ -228,13 +235,160 @@ class RiskTideGUI:
             # Save to portfolio file
             self.save_portfolio()
             messagebox.showinfo("Success", f"Imported {len(imported_data)} stocks successfully!")
+    
+            # Notify user and restart the program
+            messagebox.showinfo("Restarting", "The program will now restart to apply changes.")
+            python = sys.executable
+            script = sys.argv[0]
+            subprocess.Popen([python, script])
+            sys.exit(0)
+    
         except FileNotFoundError:
-            messagebox.showerror("INFO", f"File '{import_file}' not found.use Jstock first to export the data into a Buy Portfolio Management.csv file and place it in the same dir as RiskTide, after this you can press import")
+            messagebox.showerror(
+                "INFO",
+                f"File '{import_file}' not found. Use JStock first to export the data into a Buy Portfolio Management.csv file and place it in the same dir as RiskTide, after this you can press import"
+            )
         except Exception as e:
             messagebox.showerror("Error", f"Failed to import CSV: {e}")
-    
  
 
+    def generate_graphs(self):
+        """Generate and display various graphs for risk metrics."""
+        try:
+            # Load the metrics summary data
+            df = pd.read_csv('stock_metrics_summary.csv')
+    
+            # Create a popup window for the graphs
+            graph_window = tk.Toplevel(self.root)
+            graph_window.title("Risk Metrics Graphs")
+            graph_window.geometry("900x700")
+            graph_window.grab_set()
+            graph_window.iconbitmap('logo.ico')
+    
+            # Create a Canvas for scrollable content
+            canvas = tk.Canvas(graph_window)
+            canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+    
+            # Add a scrollbar
+            scrollbar = tk.Scrollbar(graph_window, orient=tk.VERTICAL, command=canvas.yview)
+            scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+    
+            canvas.configure(yscrollcommand=scrollbar.set)
+    
+            # Create a frame inside the Canvas
+            scrollable_frame = tk.Frame(canvas)
+            canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+    
+            # Update the scrollable region dynamically
+            def update_scroll_region(event):
+                canvas.configure(scrollregion=canvas.bbox("all"))
+    
+            scrollable_frame.bind("<Configure>", update_scroll_region)
+    
+            # Graph 1: Bar Chart (Sharpe Ratio)
+            plt.figure(figsize=(8, 4))
+            sns.barplot(x="Stock Ticker", y="Sharpe Ratio", data=df)
+            plt.title("Sharpe Ratio by Stock")
+            plt.xticks(rotation=45)
+            plt.tight_layout()
+            canvas_plot = FigureCanvasTkAgg(plt.gcf(), master=scrollable_frame)
+            canvas_plot.draw()
+            canvas_plot.get_tk_widget().pack(pady=10)
+    
+            # Graph 2: Pie Chart (Proportion of Max Drawdown)
+            plt.figure(figsize=(6, 6))
+            plt.pie(
+                df["Max Drawdown"].abs(),
+                labels=df["Stock Ticker"],
+                autopct='%1.1f%%',
+                startangle=140,
+                colors=sns.color_palette("pastel"),
+            )
+            plt.title("Proportion of Max Drawdown")
+            canvas_plot = FigureCanvasTkAgg(plt.gcf(), master=scrollable_frame)
+            canvas_plot.draw()
+            canvas_plot.get_tk_widget().pack(pady=10)
+    
+            # Graph 3: Scatter Plot (Alpha vs. Beta)
+            plt.figure(figsize=(8, 5))
+            sns.scatterplot(x="Alpha", y="Beta", data=df, hue="Stock Ticker", s=100, palette="viridis")
+            plt.title("Alpha vs. Beta")
+            plt.tight_layout()
+            canvas_plot = FigureCanvasTkAgg(plt.gcf(), master=scrollable_frame)
+            canvas_plot.draw()
+            canvas_plot.get_tk_widget().pack(pady=10)
+    
+            # Graph 4: Box Plot (Distribution of Sharpe Ratios)
+            plt.figure(figsize=(6, 4))
+            sns.boxplot(y="Sharpe Ratio", data=df, color=sns.color_palette("Set2")[0])
+            plt.title("Distribution of Sharpe Ratios")
+            plt.tight_layout()
+            canvas_plot = FigureCanvasTkAgg(plt.gcf(), master=scrollable_frame)
+            canvas_plot.draw()
+            canvas_plot.get_tk_widget().pack(pady=10)
+    
+            # Graph 5: Line Chart (Sample Trend - Simulate Cumulative Returns)
+            cumulative_returns = (1 + df["Alpha"].fillna(0)).cumprod()
+            plt.figure(figsize=(8, 4))
+            plt.plot(df["Stock Ticker"], cumulative_returns, marker="o", linestyle="-", color="green")
+            plt.title("Cumulative Returns (Simulated using Alpha)")
+            plt.xlabel("Stock Ticker")
+            plt.ylabel("Cumulative Returns")
+            plt.tight_layout()
+            canvas_plot = FigureCanvasTkAgg(plt.gcf(), master=scrollable_frame)
+            canvas_plot.draw()
+            canvas_plot.get_tk_widget().pack(pady=10)
+    
+            # Graph 6: Heatmap (Correlation Matrix)
+            plt.figure(figsize=(8, 6))
+    
+            # Check if there is enough data for correlation matrix
+            if df.shape[0] > 1:  # Ensure more than 1 row of data
+                # Drop rows with NaN values in the selected columns
+                df_clean = df.dropna(subset=["Alpha", "Beta", "Sharpe Ratio", "Sortino Ratio", "Omega Ratio"])
+                
+                if df_clean.shape[0] > 1:  # Check if enough rows remain
+                    correlation_matrix = df_clean[["Alpha", "Beta", "Sharpe Ratio", "Sortino Ratio", "Omega Ratio"]].corr()
+                    sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm", fmt=".2f", cbar=True)
+                    plt.title("Correlation Matrix of Metrics")
+                    plt.tight_layout()
+                    canvas_plot = FigureCanvasTkAgg(plt.gcf(), master=scrollable_frame)
+                    canvas_plot.draw()
+                    canvas_plot.get_tk_widget().pack(pady=10)
+                else:
+                    messagebox.showwarning("INFO", "Not enough data for correlation matrix. Please add enough Portfolio data first or import and restart. Skipping...")
+            else:
+                messagebox.showwarning("INFO", "Not enough rows in the dataset for meaningful correlation. Please add enough Portfolio data first or import and restart. Skipping...")
+    
+            # Graph 7: Histogram (Frequency of Skewness)
+            plt.figure(figsize=(8, 4))
+            sns.histplot(df["Skewness"], kde=True, bins=10, color="purple")
+            plt.title("Distribution of Skewness")
+            plt.tight_layout()
+            canvas_plot = FigureCanvasTkAgg(plt.gcf(), master=scrollable_frame)
+            canvas_plot.draw()
+            canvas_plot.get_tk_widget().pack(pady=10)
+    
+            def export_graphs():
+                file_path = tk.filedialog.asksaveasfilename(defaultextension=".pdf", filetypes=[("PDF files", "*.pdf")])
+                if file_path:
+                    pdf_pages = PdfPages(file_path)
+                    for figure in plt.get_fignums():
+                        pdf_pages.savefig(figure)
+                    pdf_pages.close()
+                    messagebox.showinfo("Success", "Graphs exported successfully!")
+    
+            export_button = tk.Button(scrollable_frame, text="Export Graphs", command=export_graphs, font=("Arial", 12), fg="white", bg="#4A90E2")
+            export_button.pack(pady=10)
+    
+            # Add a Close button at the bottom
+            close_button = tk.Button(scrollable_frame, text="Close", command=graph_window.destroy, font=("Arial", 12), fg="white", bg="#E94E77")
+            close_button.pack(pady=20)
+    
+        except FileNotFoundError:
+            messagebox.showerror("INFO", "Stock metrics summary file not found. Please add enough Portfolio data first or import.")
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to generate graphs: {e}")
 
     def delete_entry(self):
         """Delete the selected entry from the portfolio."""
@@ -352,7 +506,6 @@ class RiskTideGUI:
             metrics_modal.grab_set()  # Make it modal
             metrics_modal.state('zoomed')  # Maximizes on open
             metrics_modal.iconbitmap('logo.ico')  # Set the icon for the modal window
-
     
             # Create a frame for the title
             title_frame = tk.Frame(metrics_modal, bg="#2D3E50")
@@ -390,17 +543,27 @@ class RiskTideGUI:
     
             tree.pack(fill="both", expand=True)
     
-            # Add a close button at the bottom
-            close_frame = tk.Frame(metrics_modal, bg="#2D3E50")
-            close_frame.pack(fill="x", pady=10)
+            # Add a frame for buttons
+            button_frame = tk.Frame(metrics_modal, bg="#2D3E50")
+            button_frame.pack(fill="x", pady=10)
     
-            close_button = tk.Button(close_frame, text="Close", font=("Arial", 12, "bold"), command=metrics_modal.destroy, fg="white", bg="#E94E77")
-            close_button.pack(pady=10)
+            def export_metrics():
+                file_path = tk.filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
+                if file_path:
+                    stock_metrics_df.to_csv(file_path, index=False)
+                    messagebox.showinfo("Success", "Metrics exported successfully!")
+    
+            # Add an Export button
+            export_button = tk.Button(button_frame, text="Export Metrics", font=("Arial", 12, "bold"), command=export_metrics, fg="white", bg="#4A90E2")
+            export_button.pack(side=tk.LEFT, padx=10, pady=10)
+    
+            # Add a close button
+            close_button = tk.Button(button_frame, text="Close", font=("Arial", 12, "bold"), command=metrics_modal.destroy, fg="white", bg="#E94E77")
+            close_button.pack(side=tk.RIGHT, padx=10, pady=10)
     
         except FileNotFoundError:
             messagebox.showerror("INFO", "Please add data to the portfolio in order for the software to work.")
         except pd.errors.EmptyDataError:
-        # Custom dialog for empty file
             messagebox.showinfo("INFO", "Please add more data first to your portfolio. Between 30 and 100 entries are recommended for metrics to function properly.")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to load risk metrics: {e}")
@@ -461,6 +624,7 @@ class RiskTideGUI:
         2. Calculate your portfolio's risk metrics
         3. Delete entries from your portfolio
         4. View risk metrics in a detailed modal
+        You may restart after adding entries for the graphs and metrics to load properly.
         
         Risk Metrics:
         The SPY is fetched from kaggle, so you need your kaggle APIkey (a json file) placed inside of 
@@ -560,6 +724,51 @@ class RiskTideGUI:
         Risk Management: Use a combination of metrics like Sharpe Ratio, Sortino Ratio, and Max Drawdown to assess risk-adjusted returns and extreme risks.
         Performance Evaluation: Alpha, Beta, and R² help to assess if your portfolio is performing better than the market or in line with it, and how volatile it is.
         Investment Strategy: Depending on your risk tolerance, choose metrics that align with your strategy. For example, conservative investors may focus on low Beta, low Max Drawdown, and high Sharpe Ratio, while aggressive investors may prioritize high Alpha and potential returns.
+        
+        The charts might help you analyze your investments.
+        
+        The graphs generated for your portfolio metrics provide valuable insights into the risk and performance of your investments. Below is a guide to understanding each graph:
+        
+        1. Bar Chart: Sharpe Ratio by Stock
+        What it shows: The Sharpe Ratio measures the risk-adjusted return of each stock in your portfolio.
+        How to interpret:
+        Higher Sharpe Ratios (> 2) indicate better risk-adjusted performance.
+        Ratios between 1 and 2 suggest acceptable returns for the risk taken.
+        Ratios below 1 are generally undesirable and may indicate poor risk-return balance.
+        2. Pie Chart: Proportion of Max Drawdown
+        What it shows: The contribution of each stock to the portfolio's overall risk, represented by its maximum drawdown (largest loss from peak to trough).
+        How to interpret:
+        Larger slices indicate stocks that have significantly contributed to portfolio risk.
+        Consider reducing exposure to stocks with a disproportionately large share if you're risk-averse.
+        3. Scatter Plot: Alpha vs. Beta
+        What it shows: The relationship between Alpha (excess return over a benchmark) and Beta (volatility compared to the market) for each stock.
+        How to interpret:
+        Stocks with high Alpha and low Beta are ideal, as they offer high returns with lower risk.
+        High Alpha, high Beta suggests high returns but increased risk.
+        Low Alpha, low Beta indicates safer investments with modest or poor returns.
+        4. Box Plot: Distribution of Sharpe Ratios
+        What it shows: The range and distribution of Sharpe Ratios across all stocks in your portfolio.
+        How to interpret:
+        Narrow box: Consistent risk-adjusted performance among stocks.
+        Wide box or outliers: Indicates variability in risk-return profiles. Outliers may warrant a deeper look to understand their impact on the portfolio.
+        5. Line Chart: Cumulative Returns (Simulated using Alpha)
+        What it shows: A simulated trend of cumulative returns based on Alpha values for each stock.
+        How to interpret:
+        An upward trend indicates growing returns.
+        A flat or declining trend suggests underperformance or stagnation.
+        6. Heatmap: Correlation Matrix of Metrics
+        What it shows: The correlation between key metrics (e.g., Alpha, Beta, Sharpe Ratio, Sortino Ratio, Omega Ratio) across your portfolio.
+        How to interpret:
+        Strong positive correlations (near +1) suggest metrics that move together.
+        Strong negative correlations (near -1) highlight metrics with opposite trends.
+        Weak correlations (near 0) indicate independent relationships, which can be useful for diversification.
+        7. Histogram: Frequency of Skewness
+        What it shows: The distribution of skewness (asymmetry in returns) across your portfolio.
+        How to interpret:
+        Positive skewness suggests the potential for large gains.
+        Negative skewness implies a higher probability of large losses.
+        A centered distribution (close to 0 skewness) indicates balanced risk and reward.
+        By analyzing these graphs, you can make more informed decisions about which stocks to hold, sell, or monitor closely based on their performance and risk characteristics.        
         
         By using these metrics effectively, you can better understand the performance and risks of your portfolio, and make more informed investment decisions."""
         
