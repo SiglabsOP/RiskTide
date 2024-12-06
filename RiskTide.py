@@ -73,7 +73,8 @@ class RiskTideGUI:
         self.root.state('zoomed')  # Maximizes on start
         self.root.config(bg="#2D3E50")  # Dark blue-gray background
         self.root.resizable(True, True)
-        
+        self.root.iconbitmap('logo.ico')
+
         # Buttons for Calculations and Display
         self.calculate_button = tk.Button(self.root, text="Calculate Risk Metrics", font=("Arial", 12, "bold"), fg="white", bg="#4A90E2", command=self.calculate_risk_metrics)
         self.calculate_button.pack(pady=10)
@@ -154,23 +155,33 @@ class RiskTideGUI:
         # Add Stock Button
         # Buttons with Gradient
         # Add Stock Button
+        # Portfolio Management Section
+        # Create a frame for the Add Stock and Delete Entry buttons
+        self.portfolio_frame = tk.Frame(self.root, bg="#2D3E50")
+        self.portfolio_frame.pack(fill="x", pady=10)
+        
+        # Add Stock Button
         self.add_button = tk.Button(self.portfolio_frame, text="Add Stock", font=("Arial", 12, "bold"), fg="white", bg="#4A90E2", command=self.add_stock_modal)
-        self.add_button.pack(pady=10)
+        self.add_button.pack(side=tk.LEFT, padx=10)
         
         # Delete Entry Button
         self.delete_button = tk.Button(self.portfolio_frame, text="Delete Entry", font=("Arial", 12, "bold"), fg="white", bg="#E94E77", command=self.delete_entry)
-        self.delete_button.pack(pady=10)
+        self.delete_button.pack(side=tk.LEFT, padx=10)
+        
+        # Create a frame for the About and Help buttons
+        self.button_frame = tk.Frame(self.root, bg="#2D3E50")
+        self.button_frame.pack(fill="x", pady=10)
         
         # About and Help Buttons
-        self.about_button = tk.Button(self.root, text="About", font=("Arial", 12, "bold"), fg="white", bg="#4A90E2", command=self.show_about_modal)
-        self.about_button.pack(pady=10)
+        self.about_button = tk.Button(self.button_frame, text="About", font=("Arial", 12, "bold"), fg="white", bg="#4A90E2", command=self.show_about_modal)
+        self.about_button.pack(side=tk.LEFT, padx=10)
         
-        self.help_button = tk.Button(self.root, text="Help", font=("Arial", 12, "bold"), fg="white", bg="#4A90E2", command=self.show_help_modal)
-        self.help_button.pack(pady=10)
+        self.help_button = tk.Button(self.button_frame, text="Help", font=("Arial", 12, "bold"), fg="white", bg="#4A90E2", command=self.show_help_modal)
+        self.help_button.pack(side=tk.LEFT, padx=10)
         
-        # Result Label
+        # Result Label (Positioned at the bottom of the window)
         self.result_label = tk.Label(self.root, text="(c) 2024 SIG Labs", font=("Arial", 14), fg="white", bg="#2D3E50", justify="left")
-        self.result_label.pack(pady=10)
+        self.result_label.pack(side=tk.TOP, pady=10)
 
         # Load portfolio from file
         self.load_portfolio()
@@ -290,6 +301,8 @@ class RiskTideGUI:
             metrics_modal.geometry("900x700")
             metrics_modal.grab_set()  # Make it modal
             metrics_modal.state('zoomed')  # Maximizes on open
+            metrics_modal.iconbitmap('logo.ico')  # Set the icon for the modal window
+
     
             # Create a frame for the title
             title_frame = tk.Frame(metrics_modal, bg="#2D3E50")
