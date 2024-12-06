@@ -262,7 +262,8 @@ From the RiskTide documentation:
         By using these metrics effectively, you can better understand the performance and risks of your portfolio, and make more informed investment decisions.
 ![Screenshot 2024-12-06 093114](https://github.com/user-attachments/assets/2ec48992-ca53-4368-82b3-82af91865745)
 ![Screenshot 2024-12-06 093129](https://github.com/user-attachments/assets/f7eb5909-97bd-41dc-9059-24e34cec4d50)
-![Screenshot 2024-12-06 093136](https://github.com/user-attachments/assets/b48ee6a3-8249-4410-9fd5-188240aa82d3)
+
+![Screenshot 2024-12-06 201436](https://github.com/user-attachments/assets/54adb1f4-83e5-4e12-b630-eeb954156833)
 
 Please note each position will show up only once in the metrics summary, but we used random generated data to populate the screenshots
 
