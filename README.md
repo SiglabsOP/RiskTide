@@ -260,12 +260,19 @@ From the RiskTide documentation:
         By analyzing these graphs, you can make more informed decisions about which stocks to hold, sell, or monitor closely based on their performance and risk characteristics.        
         
         By using these metrics effectively, you can better understand the performance and risks of your portfolio, and make more informed investment decisions.
-![Screenshot 2024-12-06 093114](https://github.com/user-attachments/assets/2ec48992-ca53-4368-82b3-82af91865745)
-![Screenshot 2024-12-06 093129](https://github.com/user-attachments/assets/f7eb5909-97bd-41dc-9059-24e34cec4d50)
+ ![Screenshot 2024-12-06 214638](https://github.com/user-attachments/assets/df413691-c6ae-44cd-ad91-e138092d8aa1)
 
-![Screenshot 2024-12-06 201436](https://github.com/user-attachments/assets/54adb1f4-83e5-4e12-b630-eeb954156833)
 
- 
+![Screenshot 2024-12-06 214648](https://github.com/user-attachments/assets/179b5f3e-b901-4bda-92e2-5b50a40eb97a)
+
+![Screenshot 2024-12-06 214656](https://github.com/user-attachments/assets/67725572-5721-4d60-8ccc-f524805a376c)
+
+
+![Screenshot 2024-12-06 214710](https://github.com/user-attachments/assets/0a086a33-fa2b-43da-9c3d-094d5a57ec80)
+![Screenshot 2024-12-06 214717](https://github.com/user-attachments/assets/dc193809-f630-41af-b0f0-0317dbbd3f66)
+![Screenshot 2024-12-06 214725](https://github.com/user-attachments/assets/94339bad-7c8f-4061-9f2d-1cd15031f749)
+![Screenshot 2024-12-06 214739](https://github.com/user-attachments/assets/8b507b61-791b-4529-9467-5056931e12f5)
+
 
 If you enjoy this program, buy me a coffee https://buymeacoffee.com/siglabo
 You can use it free of charge or build upon my code. 
