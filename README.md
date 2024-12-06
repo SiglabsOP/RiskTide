@@ -211,12 +211,10 @@ This is your portfolio risk management software. You can:
         Performance Evaluation: Alpha, Beta, and R² help to assess if your portfolio is performing better than the market or in line with it, and how volatile it is.
         Investment Strategy: Depending on your risk tolerance, choose metrics that align with your strategy. For example, conservative investors may focus on low Beta, low Max Drawdown, and high Sharpe Ratio, while aggressive investors may prioritize high Alpha and potential returns.
         
-        By using these metrics effectively, you can better understand the performance and risks of your portfolio, and make more informed investment decisions."""  
-		
-		Please note the screenshots were made with random generated data, in reality each position will be displayed only once in the metrics summary.
-
-
-
+        By using these metrics effectively, you can better understand the performance and risks of your portfolio, and make more informed investment decisions.""" 
+![Screenshot 2024-12-06 093114](https://github.com/user-attachments/assets/2ec48992-ca53-4368-82b3-82af91865745)
+![Screenshot 2024-12-06 093129](https://github.com/user-attachments/assets/f7eb5909-97bd-41dc-9059-24e34cec4d50)
+![Screenshot 2024-12-06 093136](https://github.com/user-attachments/assets/b48ee6a3-8249-4410-9fd5-188240aa82d3)
 
 
 If you enjoy this program, buy me a coffee https://buymeacoffee.com/siglabo
