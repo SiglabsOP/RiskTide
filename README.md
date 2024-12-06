@@ -1,7 +1,7 @@
 # RiskTide 
 RiskTide 81.180 
  
- # RiskTide Portfolio Risk Manager v81.180
+ # RiskTide Portfolio Risk Manager v81.180 patch 1
 
 RiskTide is a comprehensive portfolio risk management software designed to help investors track, analyze, and optimize their stock portfolios. This powerful tool combines an intuitive graphical interface with advanced risk metrics calculations to provide valuable insights into your investment strategy.
 
@@ -40,6 +40,11 @@ RiskTide is a comprehensive portfolio risk management software designed to help 
 ### Additional Features
 - About section with developer information and donation links.
 - Comprehensive help modal with detailed guidance on using the software.
+
+Patch 1 includes: 
+					-added extra threading for graphs and metrics, and improved downloading SPY historical data
+				    -improved restart functionality after mass import
+
 
 ## Installation
 

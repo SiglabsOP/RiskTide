@@ -11,7 +11,10 @@ import sys
 import os
 from matplotlib.backends.backend_pdf import PdfPages
 from tkinter import filedialog
-
+import threading  # Add this at the top of your script
+def run_external_scripts_threaded():
+    """Runs external scripts in a separate thread"""
+    threading.Thread(target=run_external_scripts).start()
 
 def run_external_scripts():
     # Run RiskTide Horizon.py and wait for it to finish
@@ -84,10 +87,15 @@ class RiskTideGUI:
         self.root.iconbitmap('logo.ico')
 
         # Buttons for Calculations and Display
-        self.calculate_button = tk.Button(self.root, text="Calculate Risk Metrics", font=("Arial", 12, "bold"), fg="white", bg="#4A90E2", command=self.calculate_risk_metrics)
+        self.calculate_button = tk.Button(self.root, text="Calculate Risk Metrics", font=("Arial", 12, "bold"), fg="white", bg="#4A90E2", command=self.calculate_risk_metrics_threaded)
+
+
+
         self.calculate_button.pack(pady=10)
         
         self.graph_button = tk.Button(self.root, text="Generate Graphs", font=("Arial", 12, "bold"), fg="white", bg="#4A90E2", command=self.generate_graphs)
+
+
         self.graph_button.pack(pady=10)
 
 
@@ -189,7 +197,8 @@ class RiskTideGUI:
         self.help_button.pack(side=tk.LEFT, padx=10)
         
         # Import Button
-        self.import_button = tk.Button(self.button_frame, text="Jstock Import", font=("Arial", 12, "bold"), fg="white", bg="#4A90E2", command=self.import_csv)
+        self.import_button = tk.Button(self.button_frame, text="Jstock Import", font=("Arial", 12, "bold"), fg="white", bg="#4A90E2", command=self.import_csv_threaded)
+
         self.import_button.pack(side=tk.RIGHT, padx=10)  # Aligned to the right
         
         # Result Label (Positioned at the bottom of the window)
@@ -199,7 +208,13 @@ class RiskTideGUI:
         # Load portfolio
         self.load_portfolio()
 
+    def import_csv_threaded(self):
+        """Runs the import_csv method in a separate thread."""
+        threading.Thread(target=lambda: self.import_csv()).start()
+
  
+ 
+    
     def import_csv(self):
         """Import stock data from the JStock CSV file and populate the portfolio."""
         import_file = "Buy Portfolio Management.csv"  # File name to import
@@ -238,10 +253,16 @@ class RiskTideGUI:
     
             # Notify user and restart the program
             messagebox.showinfo("Restarting", "The program will now restart to apply changes.")
+            
+            # Restart the program in a new process
             python = sys.executable
             script = sys.argv[0]
+    
+            # Launch a new process to restart the program
             subprocess.Popen([python, script])
-            sys.exit(0)
+    
+            # Kill the old process
+            os.kill(os.getpid(), 9)  # Forcefully terminate the old process
     
         except FileNotFoundError:
             messagebox.showerror(
@@ -493,6 +514,12 @@ class RiskTideGUI:
 
         tk.Button(modal, text="Submit", font=("Arial", 12, "bold"), command=submit_stock).pack(pady=20)
 
+
+     
+    def calculate_risk_metrics_threaded(self):
+        """Runs the calculate_risk_metrics method in a separate thread."""
+        threading.Thread(target=lambda: self.calculate_risk_metrics()).start()
+
     def calculate_risk_metrics(self):
         """Load and display risk metrics from CSV in a tidy modal."""
         try:
@@ -578,7 +605,7 @@ class RiskTideGUI:
         about_modal.iconbitmap('logo.ico')
 
 
-        about_label = tk.Label(about_modal, text="RiskTide Portfolio Management v81.180\n\nDeveloped by Peter De Ceuster", font=("Arial", 16), fg="black")
+        about_label = tk.Label(about_modal, text="RiskTide Portfolio Management v81.180 Patch 1\n\nDeveloped by Peter De Ceuster", font=("Arial", 16), fg="black")
         about_label.pack(pady=20)
 
         link_label = tk.Label(about_modal, text="Buy me a coffee", fg="blue", cursor="hand2")

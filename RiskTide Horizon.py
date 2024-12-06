@@ -3,6 +3,7 @@ import time
 from kaggle.api.kaggle_api_extended import KaggleApi
 import shutil
 from datetime import datetime, timedelta
+import threading
 
 # Set the Kaggle API credentials (you only need to do this once)
 os.environ['KAGGLE_CONFIG_DIR'] = os.path.expanduser("~/.kaggle")
@@ -90,7 +91,10 @@ def record_last_run_time():
 def main():
     # Check if the dataset needs to be downloaded
     if should_download():
-        download_spy_dataset()
+        download_thread = threading.Thread(target=download_spy_dataset)
+        download_thread.start()
+ 
+        download_thread.join()  # Wait for the download to finish
 
         # Record the current time as the last run time
         record_last_run_time()
