@@ -216,6 +216,7 @@ This is your portfolio risk management software. You can:
 ![Screenshot 2024-12-06 093129](https://github.com/user-attachments/assets/f7eb5909-97bd-41dc-9059-24e34cec4d50)
 ![Screenshot 2024-12-06 093136](https://github.com/user-attachments/assets/b48ee6a3-8249-4410-9fd5-188240aa82d3)
 
+Please note each position will show up only once in the metrics summary, but we used random generated data to populate the screenshots
 
 If you enjoy this program, buy me a coffee https://buymeacoffee.com/siglabo
 You can use it free of charge or build upon my code. 
