@@ -100,4 +100,4 @@ def main():
         record_last_run_time()
 
 # Run the script
-main()
+main()      

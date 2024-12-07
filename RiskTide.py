@@ -10,6 +10,9 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import sys
 import os
 from matplotlib.backends.backend_pdf import PdfPages
+import winsound
+startup_sound_file = 'startup.wav'  # Make sure this file exists in the same directory or update the path
+
 from tkinter import filedialog
 import threading  # Add this at the top of your script
 def run_external_scripts_threaded():
@@ -23,7 +26,16 @@ def run_external_scripts():
     # After Horizon finishes, run RiskTide Metrics.py
     subprocess.run(["python", "RiskTide Metrics.py"])
     
-    
+def play_startup_sound():
+    if os.path.exists(startup_sound_file):
+        try:
+            winsound.PlaySound(startup_sound_file, winsound.SND_FILENAME | winsound.SND_ASYNC)
+        except Exception as e:
+            print(f"Error playing startup sound: {e}")
+    else:
+        print(f"Startup sound file '{startup_sound_file}' not found.")
+
+        
 class GradientButton(tk.Canvas):
     def __init__(self, parent, text, command=None, colors=("blue", "lightblue"), font=("Arial", 12, "bold"), **kwargs):
         super().__init__(parent, **kwargs)
@@ -822,5 +834,6 @@ app = RiskTideGUI(root)
 
 # Start the Tkinter event loop
 run_external_scripts()
+threading.Thread(target=play_startup_sound).start()
 
 root.mainloop()
