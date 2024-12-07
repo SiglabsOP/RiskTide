@@ -11,7 +11,7 @@ import sys
 import os
 from matplotlib.backends.backend_pdf import PdfPages
 import winsound
-startup_sound_file = 'startup.wav'  # Make sure this file exists in the same directory or update the path
+startup_sound_file = 'startuprt.wav'  # Make sure this file exists in the same directory or update the path
 
 from tkinter import filedialog
 import threading  # Add this at the top of your script
@@ -421,7 +421,7 @@ class RiskTideGUI:
         except FileNotFoundError:
             messagebox.showerror("INFO", "Stock metrics summary file not found. Please add enough Portfolio data first or import.")
         except Exception as e:
-            messagebox.showerror("Error", f"Failed to generate graphs: {e}")
+            messagebox.showerror("INFO", f"Please add enough Portfolio data first or import. Failed to generate graphs: {e}")
 
     def delete_entry(self):
         """Delete the selected entry from the portfolio."""
@@ -601,11 +601,11 @@ class RiskTideGUI:
             close_button.pack(side=tk.RIGHT, padx=10, pady=10)
     
         except FileNotFoundError:
-            messagebox.showerror("INFO", "Please add data to the portfolio in order for the software to work.")
+            messagebox.showerror("INFO", "Please add data to the portfolio in order for the software to work properly with your portfolio.")
         except pd.errors.EmptyDataError:
             messagebox.showinfo("INFO", "Please add more data first to your portfolio. Between 30 and 100 entries are recommended for metrics to function properly.")
         except Exception as e:
-            messagebox.showerror("Error", f"Failed to load risk metrics: {e}")
+            messagebox.showerror("Error", f"Please add enough entries in your portfolio first. Failed to load risk metrics: {e}")
 
     def show_about_modal(self):
         """Display the About modal with information about the app."""
